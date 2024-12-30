@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flip Card Example</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+      margin: 0;
+      background-color: #f4f4f9;
+      font-family: 'Times New Roman', serif;
+    }
+
+    .flip-card {
+      width: 200px;
+      height: 300px;
+      perspective: 1000px; /* This sets up the 3D effect */
+      border-radius: 15px; /* Rounded corners */
+      margin-bottom: 20px; /* Add space between rows */
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d; /* Allow content to be 3D */
+      transition: transform 0.5s; /* Smooth animation */
+    }
+
+    /* Flip the card when the 'flipped' class is added */
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden; /* Prevents the back from showing when flipped */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      text-align: center;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 15px; /* Rounded corners */
+      overflow: hidden;
+    }
+
+    .flip-card-back {
+      transform: rotateY(180deg); /* Rotate the back side 180 degrees */
+      background-color: #f9c74f;
+    }
+
+    #add-card {
+      margin-top: 20px;
+      padding: 10px 15px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #add-card:hover {
+      background-color: #45a049;
+    }
+
+    .edit-btn {
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: #ffb142;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .edit-btn:hover {
+      background-color: #ff9e30;
+    }
+
+    .flip-card-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .flip-card-content p {
+      margin: 0;
+      text-align: center;
+      word-wrap: break-word;
+    }
+
+    .flip-card-content .arrow {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #555;
+      display: none;
+    }
+
+    .flip-card-content.paginated .arrow {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Existing Cards -->
+  <div class="flip-card" onclick="this.classList.toggle('flipped')">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <div class="flip-card-content">
+          <p>#1</p>
+          <span class="arrow" onclick="showNextPage(event, this)">→</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <div class="flip-card-content">
+          <p>Believe in people.</p>
+          <span class="arrow" onclick="showNextPage(event, this)">→</span>
+        </div>
+      </div>
+    </div>
+    <button class="edit-btn" onclick="editCard(this); event.stopPropagation();">Edit Card</button>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <div class="flip-card-content">
+          <p>#2</p>
+          <span class="arrow" onclick="showNextPage(event, this)">→</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <div class="flip-card-content">
+          <p>Embrace challenges.</p>
+          <span class="arrow" onclick="showNextPage(event, this)">→</span>
+        </div>
+      </div>
+    </div>
+    <button class="edit-btn" onclick="editCard(this); event.stopPropagation();">Edit Card</button>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <div class="flip-card-content">
+          <p>#3</p>
+          <span class="arrow" onclick="showNextPage(event, this)">→</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <div class="flip-card-content">
+          <p>Stay focused and positive.</p>
+          <span class="arrow" onclick="showNextPage(event, this)">→</span>
+        </div>
+      </div>
+    </div>
+    <button class="edit-btn" onclick="editCard(this); event.stopPropagation();">Edit Card</button>
+  </div>
+
+  <!-- Button to Add More Cards -->
+  <button id="add-card" onclick="addCard()">+ Add Card</button>
+
+  <script>
+    // Function to add a new flip card dynamically
+    function addCard() {
+      const newCard = document.createElement('div');
+      newCard.classList.add('flip-card');
+      newCard.innerHTML = `
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="flip-card-content">
+              <p>New Card</p>
+              <span class="arrow" onclick="showNextPage(event, this)">→</span>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="flip-card-content">
+              <p>Edit me!</p>
+              <span class="arrow" onclick="showNextPage(event, this)">→</span>
+            </div>
+          </div>
+        </div>
+        <button class="edit-btn" onclick="editCard(this); event.stopPropagation();">Edit Card</button>
+      `;
+      // Make the new card clickable to flip
+      newCard.onclick = function() {
+        this.classList.toggle('flipped');
+      };
+      document.body.insertBefore(newCard, document.getElementById('add-card'));
+    }
+
+    // Function to edit the card's content or color
+    function editCard(button) {
+      const card = button.parentElement;
+      const front = card.querySelector('.flip-card-front p');
+      const back = card.querySelector('.flip-card-back p');
+
+      // Provide options for editing
+      const option = prompt("What would you like to edit?\n1. Front Text\n2. Back Text\n3. Back Color", "1");
+
+      if (option === "1") {
+        const newFrontText = prompt("Edit the front text:", front.innerText);
+        if (newFrontText !== null) front.innerText = newFrontText;
+      } else if (option === "2") {
+        const newBackText = prompt("Edit the back text:", back.innerText);
+        if (newBackText !== null) back.innerText = newBackText;
+      } else if (option === "3") {
+        const newColor = prompt("Enter a background color (hex):", "#f9c74f");
+        if (newColor !== null) {
+          card.querySelector('.flip-card-back').style.backgroundColor = newColor;
+        }
+      } else {
+        alert("Invalid option. Please try again.");
+      }
+    }
+
+    // Function to show the next page of text if overflow occurs
+    function showNextPage(event, arrow) {
+      event.stopPropagation();
+      const content = arrow.parentElement;
+      const text = content.querySelector('p');
+
+      // Pagination logic (to be customized further as needed)
+      alert("Pagination feature triggered for: " + text.innerText);
+    }
+  </script>
+
+</body>
+</html>
